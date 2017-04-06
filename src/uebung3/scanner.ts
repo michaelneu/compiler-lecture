@@ -21,9 +21,9 @@ export class Token {
     }
 }
 
-export class MatchedToken {
+export class MatchedToken<T> {
     public constructor(
-        public readonly value: string,
+        public readonly value: T,
         public readonly token: Token
     ) { }
 }
@@ -58,5 +58,5 @@ export abstract class Scanner {
         }
     }
 
-    public abstract nextToken() : MatchedToken;
+    public abstract nextToken() : MatchedToken<any>;
 }

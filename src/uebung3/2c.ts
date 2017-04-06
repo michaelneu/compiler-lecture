@@ -38,35 +38,36 @@ export class RealNumberScanner extends Scanner {
         return this.lookahead == "E";
     }
 
-    public nextToken(): MatchedToken {
+    public nextToken(): MatchedToken<any> {
         if (this.lookahead == null) {
             return new MatchedToken(null, RealNumberScanner.EOF);
         } else {
+            if (this.lookaheadIsNumeric) {
+                let number = this.matchSequenceOfNumbers();
 
-        }
-        if (this.lookaheadIsNumeric) {
-            let number = this.matchSequenceOfNumbers();
-
-            if (this.lookaheadIsDot) {
-                number += this.lookahead;
-                this.consume();
-
-                number += this.matchSequenceOfNumbers();
-            }
-
-            if (this.lookaheadIsE) {
-                number += this.lookahead;
-                this.consume();
-
-                if (this.lookaheadIsMinus || this.lookaheadIsPlus) {
+                if (this.lookaheadIsDot) {
                     number += this.lookahead;
                     this.consume();
+
+                    number += this.matchSequenceOfNumbers();
                 }
 
-                number += this.matchSequenceOfNumbers();
-            }
+                if (this.lookaheadIsE) {
+                    number += this.lookahead;
+                    this.consume();
 
-            return new MatchedToken(number, RealNumberScanner.REALNUMBER);
+                    if (this.lookaheadIsMinus || this.lookaheadIsPlus) {
+                        number += this.lookahead;
+                        this.consume();
+                    }
+
+                    number += this.matchSequenceOfNumbers();
+                }
+
+                const float = parseFloat(number);
+
+                return new MatchedToken<number>(float, RealNumberScanner.REALNUMBER);
+            }
         }
     }
 
@@ -86,7 +87,7 @@ export class RealNumberScanner extends Scanner {
     }
 }
 
-const scanner = new RealNumberScanner("10.3E-100");
+const scanner = new RealNumberScanner("10.3E+100");
 
 let next = scanner.nextToken();
 

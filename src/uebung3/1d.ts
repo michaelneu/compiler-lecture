@@ -34,14 +34,15 @@ export class FixedCommaScanner extends Scanner {
         }
     }
 
-    public nextToken(): MatchedToken {
+    public nextToken(): MatchedToken<any> {
         if (this.lookahead == null) {
             return new MatchedToken(null, FixedCommaScanner.EOF);
         } else {
             if (this.lookaheadIsNumeric || this.lookaheadIsDot || this.lookaheadIsMinus) {
-                const number = this.matchNumber();
+                const number = this.matchNumber(),
+                      float = parseFloat(number);
 
-                return new MatchedToken(number, FixedCommaScanner.NUMBER);
+                return new MatchedToken<number>(float, FixedCommaScanner.NUMBER);
             } else {
                 throw new ScannerException(`unknown token "${this.lookahead}"`);
             }
